@@ -14,9 +14,7 @@ class User(Base):
     password_hash = mapped_column(String(255), nullable=False)
     role = mapped_column(String(50), nullable=False)
     created_at = mapped_column(DateTime, nullable=False, server_default=func.now())
-    update_at = mapped_column(
-        DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
-    )
+    update_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
     def set_password(self, password_hash):
         self.password_hash = bcrypt.hashpw(
