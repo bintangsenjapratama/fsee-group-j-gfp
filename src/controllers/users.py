@@ -13,7 +13,7 @@ Session = sessionmaker(connection)
 s = Session()
 
 
-@users_routes.route("/getalldata/user", methods=["GET"])
+@users_routes.route("/users/getalldata", methods=["GET"])
 def get_allUser():
     try:
         Session = sessionmaker(bind=connection)
