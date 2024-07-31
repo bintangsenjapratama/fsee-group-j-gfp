@@ -1,10 +1,16 @@
 from flask import Blueprint, request
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+    get_jwt,
+)
 from sqlalchemy import select
 
 from connectors.mysql_connectors import connection
+from models.blocklist import BLOCKLIST
 from models.user import User
 
 
@@ -85,3 +91,15 @@ def login_userData():
         print(e)
         s.rollback()
         return {"message": "Failed to Login User"}, 500
+
+
+@users_routes.route("/users/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    try:
+        jti = get_jwt()["jti"]
+        BLOCKLIST.add(jti)
+        return {"message": "User successfully logged out"}, 200
+    except Exception as e:
+        print(e)
+        return {"message": "Failed to logout"}, 500
