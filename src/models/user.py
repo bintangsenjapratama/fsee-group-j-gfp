@@ -3,6 +3,7 @@ from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import mapped_column, relationship
 import bcrypt
+from models.transaction import Transaction
 
 
 class User(Base):
@@ -18,13 +19,23 @@ class User(Base):
 
     products = relationship("Product", back_populates="user")
 
-    def set_password(self, password_hash):
+    sent_transactions = relationship(
+        "Transaction",
+        foreign_keys=[Transaction.from_user_id],
+        back_populates="from_user",
+    )
+    received_transactions = relationship(
+        "Transaction",
+        foreign_keys=[Transaction.to_user_id],
+        back_populates="to_user"
+    )
+
+    def set_password(self, password):
         self.password_hash = bcrypt.hashpw(
-            password_hash.encode("utf-8"), bcrypt.gensalt()
+            password.encode("utf-8"), bcrypt.gensalt()
         ).decode("utf-8")
 
     def check_password(self, password_hash):
         return bcrypt.checkpw(
             password_hash.encode("utf-8"), self.password_hash.encode("utf-8")
         )
-    
