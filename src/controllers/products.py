@@ -5,6 +5,7 @@ from models.product import Product
 from datetime import datetime
 from connectors.mysql_connectors import connection
 from models.blocklist import BLOCKLIST
+from decorator.role_checker import role_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
@@ -50,6 +51,7 @@ def get_all_product():
 
 
 @products_routes.route("/registerProduct", methods=["POST"])
+@role_required("seller")
 def register_usersData():
     s.begin()
     try:
@@ -59,23 +61,25 @@ def register_usersData():
         stock = int(request.form["stock"])
         category = request.form["category"]
         type = request.form["type"]
-        discount = (float(request.form["discount"]) if "discount" in request.form else 0.0)
+        discount = (
+            float(request.form["discount"]) if "discount" in request.form else 0.0
+        )
         user_id = int(request.form["user_id"])
-        
+
         if discount > 0:
-            discounted_price = price / (1 + discount / 100.0)
+            discounted_price = price * (1 - discount / 100)
         else:
             discounted_price = price
 
         NewProduct = Product(
-            product_name = product_name,
-            price =discounted_price,
-            description = description,
-            stock = stock,
-            category = category,
-            type = type, 
-            discount = discount,
-            user_id = user_id,
+            product_name=product_name,
+            price=discounted_price,
+            description=description,
+            stock=stock,
+            category=category,
+            type=type,
+            discount=discount,
+            user_id=user_id,
         )
         s.add(NewProduct)
         s.commit()
@@ -118,14 +122,6 @@ def get_accounts_by_user_id():
         return {"message": "Unexpected Error"}, 500
 
 
-from flask import request, jsonify
-from datetime import datetime
-
-
-from flask import request, jsonify
-from datetime import datetime
-
-
 @products_routes.route("/product/<id>", methods=["PUT"])
 def product_update(id):
     s.begin()
@@ -135,7 +131,6 @@ def product_update(id):
         if not product:
             return {"message": "Product not found"}, 404
 
-        # Extract and validate data from request
         product_name = request.form.get("product_name", product.product_name)
         price = float(request.form.get("price", product.price))
         description = request.form.get("description", product.description)
