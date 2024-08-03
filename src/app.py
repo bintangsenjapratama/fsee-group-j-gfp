@@ -8,6 +8,8 @@ from flask_jwt_extended import JWTManager
 from connectors.mysql_connectors import connection
 from controllers.users import users_routes
 from controllers.products import products_routes
+from controllers.transaction import transaction_routes
+
 from models.blocklist import BLOCKLIST
 from models.user import User
 
@@ -22,6 +24,7 @@ Session = sessionmaker(connection)
 
 app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)
+app.register_blueprint(transaction_routes)
 
 
 @jwt.token_in_blocklist_loader
