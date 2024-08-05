@@ -22,7 +22,7 @@ s = Session()
 
 
 @users_routes.route("/getalluser", methods=["GET"])
-@swag_from("docs/get_alluser.yml")
+@swag_from("docs/users/get_alluser.yml")
 def get_allUser():
     try:
         with Session() as s:
@@ -54,7 +54,7 @@ def get_allUser():
 
 
 @users_routes.route("/register", methods=["POST"])
-@swag_from("docs/register.yml")
+@swag_from("docs/users/register.yml")
 def register_usersData():
     s.begin()
     try:
@@ -74,7 +74,7 @@ def register_usersData():
 
 
 @users_routes.route("/login", methods=["POST"])
-@swag_from("docs/login.yml")
+@swag_from("docs/users/login.yml")
 def login_userData():
     try:
         email = request.form["email"]
@@ -98,7 +98,7 @@ def login_userData():
 
 
 @users_routes.route("/logout", methods=["POST"])
-@swag_from("docs/logout.yml")
+@swag_from("docs/users/logout.yml")
 @jwt_required()
 def logout():
     try:
@@ -111,7 +111,7 @@ def logout():
 
 
 @users_routes.route("/users/me", methods=["PUT"])
-@swag_from("docs/update_current_user.yml")
+@swag_from("docs/users/update_current_user.yml")
 @jwt_required()
 def update_current_user():
     current_user_id = get_jwt_identity()
@@ -136,7 +136,7 @@ def update_current_user():
 
 
 @users_routes.route("/whoami", methods=["GET"])
-@swag_from("docs/get_current_user.yml")
+@swag_from("docs/users/get_current_user.yml")
 @jwt_required()
 def get_current_user():
     claims = get_jwt()
