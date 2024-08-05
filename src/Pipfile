@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 flask = "*"
 flasgger = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 
