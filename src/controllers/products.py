@@ -1,12 +1,11 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 from models.product import Product
 from datetime import datetime
 from connectors.mysql_connectors import connection
-from models.blocklist import BLOCKLIST
 from decorator.role_checker import role_required
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 
 products_routes = Blueprint("products_routes", __name__)
@@ -51,43 +50,48 @@ def get_all_product():
 
 
 @products_routes.route("/registerProduct", methods=["POST"])
-@role_required("seller")
-def register_usersData():
-    s.begin()
-    try:
-        product_name = request.form["product_name"]
-        price = float(request.form["price"])
-        description = request.form["description"]
-        stock = int(request.form["stock"])
-        category = request.form["category"]
-        type = request.form["type"]
-        discount = (
-            float(request.form["discount"]) if "discount" in request.form else 0.0
-        )
-        user_id = int(request.form["user_id"])
+@jwt_required()
+def register_product():
+    # s.begin()
 
-        if discount > 0:
-            discounted_price = price * (1 - discount / 100)
-        else:
-            discounted_price = price
+    claims = get_jwt()
+    if claims.get("role") == "seller":
+        try:
+            product_name = request.form["product_name"]
+            price = float(request.form["price"])
+            description = request.form["description"]
+            stock = int(request.form["stock"])
+            category = request.form["category"]
+            product_type = request.form["type"]
+            discount = (
+                float(request.form["discount"]) if "discount" in request.form else 0.0
+            )
+            user_id = int(request.form["user_id"])
 
-        NewProduct = Product(
-            product_name=product_name,
-            price=discounted_price,
-            description=description,
-            stock=stock,
-            category=category,
-            type=type,
-            discount=discount,
-            user_id=user_id,
-        )
-        s.add(NewProduct)
-        s.commit()
-    except Exception as e:
-        print(e)
-        s.rollback()
-        return {"message": "Fail to Register New Product"}, 500
-    return {"message": "Success to Create New Product"}, 200
+            if discount > 0:
+                discounted_price = price * (1 - discount / 100)
+            else:
+                discounted_price = price
+
+            new_product = Product(
+                product_name=product_name,
+                price=discounted_price,
+                description=description,
+                stock=stock,
+                category=category,
+                type=product_type,
+                discount=discount,
+                user_id=user_id,
+            )
+            s.add(new_product)
+            s.commit()
+            return {"message": "Success to Create New Product"}, 200
+        except Exception as e:
+            print(e)
+            s.rollback()
+            return {"message": "Fail to Register New Product"}, 500
+    else:
+        return {"message": "Only Seller can register add product"}, 403
 
 
 @products_routes.route("/products/me", methods=["GET"])
