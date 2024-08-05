@@ -8,6 +8,8 @@ from models.product import Product
 from models.blocklist import BLOCKLIST
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from flasgger import swag_from
+
 
 transaction_routes = Blueprint("transaction_routes", __name__)
 Session = sessionmaker(connection)
@@ -15,6 +17,7 @@ s = Session()
 
 
 @transaction_routes.route("/register/transactions", methods=["POST"])
+@swag_from("docs/transaction/register_transaction.yml")
 def register_transaction():
     s.begin()
     try:
@@ -72,6 +75,7 @@ def register_transaction():
 
 
 @transaction_routes.route("/getallTransaction", methods=["GET"])
+@swag_from("docs/transaction/get_all_transaction.yml")
 def get_all_transaction():
     try:
         with Session() as s:
