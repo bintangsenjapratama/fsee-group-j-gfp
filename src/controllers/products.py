@@ -6,7 +6,7 @@ from datetime import datetime
 from connectors.mysql_connectors import connection
 from decorator.role_checker import role_required
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-
+from flasgger import swag_from
 
 products_routes = Blueprint("products_routes", __name__)
 Session = sessionmaker(connection)
@@ -14,6 +14,7 @@ s = Session()
 
 
 @products_routes.route("/getallproduct", methods=["GET"])
+@swag_from("docs/products/get_all_product.yml")
 def get_all_product():
     try:
         with Session() as s:
@@ -50,6 +51,7 @@ def get_all_product():
 
 
 @products_routes.route("/registerProduct", methods=["POST"])
+@swag_from("docs/products/register_product.yml")
 @jwt_required()
 def register_product():
     # s.begin()
@@ -95,6 +97,7 @@ def register_product():
 
 
 @products_routes.route("/products/me", methods=["GET"])
+@swag_from("docs/products/get_accounts_by_user_id.yml")
 @jwt_required()
 def get_accounts_by_user_id():
     current_user_id = get_jwt_identity()
@@ -127,6 +130,7 @@ def get_accounts_by_user_id():
 
 
 @products_routes.route("/product/<id>", methods=["PUT"])
+@swag_from("docs/products/product_update.yml")
 def product_update(id):
     s.begin()
     try:
