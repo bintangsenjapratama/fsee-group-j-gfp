@@ -82,10 +82,10 @@ def login_userData():
             return {"message": "Invalid password"}, 403
 
         acces_token = create_access_token(
-            identity=user.id, additional_claims={"email": user.email, "id": user.id}
+            identity=user.id, additional_claims={"email": user.email, "id": user.id, "role": user.role}
         )
         s.flush()
-        return {"access_tokern": acces_token, "message": "Success to Login user"}, 200
+        return {"email": user.email, "id": user.id , "role": user.role, "access_tokern": acces_token, "message": "Success to Login user"}, 200
     except Exception as e:
         print(e)
         s.rollback()
@@ -126,3 +126,10 @@ def update_current_user():
         print(e)
         s.rollback()
         return {"message": "Failed to update user"}, 500
+
+
+@users_routes.route("/whoami", methods=["GET"])
+@jwt_required()
+def get_current_user():
+    claims = get_jwt()
+    return {"claims": claims}
