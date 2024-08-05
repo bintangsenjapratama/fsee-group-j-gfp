@@ -1,0 +1,29 @@
+openapi: 3.0.0
+info:
+  title: Register User API
+  version: 1.0.0
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      description: Registers a new user in the system.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                role:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success to Create New User
+        500:
+          description: Fail to Register New User
