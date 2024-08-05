@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Register Transaction API
+  version: 1.0.0
+paths:
+  /register/transactions:
+    post:
+      summary: Register a new transaction
+      description: Registers a new transaction in the system.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                from_user_id:
+                  type: integer
+                to_user_id:
+                  type: integer
+                product_id:
+                  type: integer
+                product_quantity:
+                  type: integer
+                total_price:
+                  type: number
+                  format: float
+                status:
+                  type: string
+      responses:
+        200:
+          description: Successfully Created New Transaction
+        400:
+          description: Insufficient Stock or Total price mismatch
+        404:
+          description: Product not found
+        500:
+          description: Failed to Register New Transaction
