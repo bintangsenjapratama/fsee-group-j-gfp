@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Get All Users API
+  version: 1.0.0
+paths:
+  /getalluser:
+    get:
+      summary: Get all users
+      description: Retrieves a list of all users.
+      parameters:
+        - name: query
+          in: query
+          required: false
+          description: Search keyword for filtering users by username.
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        username:
+                          type: string
+                        role:
+                          type: string
+        500:
+          description: Unexpected Error
