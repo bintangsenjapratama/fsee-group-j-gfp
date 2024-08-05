@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Get Products by User ID API
+  version: 1.0.0
+paths:
+  /products/me:
+    get:
+      summary: Get products by user ID
+      description: Retrieves a list of products associated with the current user.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Accounts of the current user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accounts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        user_id:
+                          type: integer
+                        product_name:
+                          type: string
+                        price:
+                          type: number
+                          format: float
+                        description:
+                          type: string
+                        stock:
+                          type: integer
+                        category:
+                          type: string
+                        type:
+                          type: string
+                        discount:
+                          type: number
+                          format: float
+        404:
+          description: No product found for this user
+        500:
+          description: Unexpected Error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
