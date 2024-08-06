@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
 from flask_jwt_extended import JWTManager
+from flasgger import Swagger
 
 
 from connectors.mysql_connectors import connection
@@ -22,6 +23,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 jwt = JWTManager(app)
 
 Session = sessionmaker(connection)
+swagger = Swagger(app)
 
 app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)

@@ -6,11 +6,33 @@ paths:
   /logout:
     post:
       summary: Logout a user
-      description: Logs out a user by invalidating the JWT token.
-      security:
-        - bearerAuth: []
+      description: Logs out a user by invalidating their JWT.
       responses:
         200:
           description: User successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User successfully logged out"
         500:
           description: Failed to logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Failed to logout"
+      security:
+        - jwtAuth: []
+components:
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -87,10 +87,17 @@ def login_userData():
             return {"message": "Invalid password"}, 403
 
         acces_token = create_access_token(
-            identity=user.id, additional_claims={"email": user.email, "id": user.id, "role": user.role}
+            identity=user.id,
+            additional_claims={"email": user.email, "id": user.id, "role": user.role},
         )
         s.flush()
-        return {"email": user.email, "id": user.id , "role": user.role, "access_tokern": acces_token, "message": "Success to Login user"}, 200
+        return {
+            "email": user.email,
+            "id": user.id,
+            "role": user.role,
+            "access_tokern": acces_token,
+            "message": "Success to Login user",
+        }, 200
     except Exception as e:
         print(e)
         s.rollback()
@@ -98,8 +105,8 @@ def login_userData():
 
 
 @users_routes.route("/logout", methods=["POST"])
-@swag_from("docs/users/logout.yml")
 @jwt_required()
+@swag_from("docs/users/logout.yml")
 def logout():
     try:
         jti = get_jwt()["jti"]
@@ -111,8 +118,8 @@ def logout():
 
 
 @users_routes.route("/users/me", methods=["PUT"])
-@swag_from("docs/users/update_current_user.yml")
 @jwt_required()
+@swag_from("docs/users/update_current_user.yml")
 def update_current_user():
     current_user_id = get_jwt_identity()
     print(current_user_id)
@@ -136,8 +143,8 @@ def update_current_user():
 
 
 @users_routes.route("/whoami", methods=["GET"])
-@swag_from("docs/users/get_current_user.yml")
 @jwt_required()
+@swag_from("docs/users/get_current_user.yml")
 def get_current_user():
     claims = get_jwt()
     return {"claims": claims}
