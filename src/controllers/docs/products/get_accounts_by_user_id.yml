@@ -46,9 +46,3 @@ paths:
           description: No product found for this user
         500:
           description: Unexpected Error
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

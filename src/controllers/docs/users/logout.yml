@@ -14,9 +14,3 @@ paths:
           description: User successfully logged out
         500:
           description: Failed to logout
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

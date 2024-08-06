@@ -21,9 +21,3 @@ paths:
                     type: object
         500:
           description: Failed to get current user
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

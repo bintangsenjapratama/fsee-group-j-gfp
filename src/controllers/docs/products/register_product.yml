@@ -41,9 +41,3 @@ paths:
           description: Only Seller can register add product
         500:
           description: Fail to Register New Product
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
