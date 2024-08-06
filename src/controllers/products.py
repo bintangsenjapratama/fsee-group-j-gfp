@@ -51,8 +51,8 @@ def get_all_product():
 
 
 @products_routes.route("/registerProduct", methods=["POST"])
-@swag_from("docs/products/register_product.yml")
 @jwt_required()
+@swag_from("docs/products/register_product.yml")
 def register_product():
     # s.begin()
 
@@ -97,8 +97,8 @@ def register_product():
 
 
 @products_routes.route("/products/me", methods=["GET"])
-@swag_from("docs/products/get_accounts_by_user_id.yml")
 @jwt_required()
+@swag_from("docs/products/get_accounts_by_user_id.yml")
 def get_accounts_by_user_id():
     current_user_id = get_jwt_identity()
     try:
