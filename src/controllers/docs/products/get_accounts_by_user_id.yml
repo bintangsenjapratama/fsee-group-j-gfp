@@ -1,3 +1,5 @@
+tags:
+  - Products
 openapi: 3.0.0
 info:
   title: Get Products by User ID API
