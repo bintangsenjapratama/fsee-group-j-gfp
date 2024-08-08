@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
-
+from flask_cors import CORS
 
 from connectors.mysql_connectors import connection
 from controllers.users import users_routes
@@ -28,6 +28,12 @@ swagger = Swagger(app)
 app.register_blueprint(users_routes)
 app.register_blueprint(products_routes)
 app.register_blueprint(transaction_routes)
+
+
+cors = CORS(
+    app,
+    resources={r"/*": {"origins": ["http://localhost:3000"]}},
+)
 
 
 @jwt.token_in_blocklist_loader
