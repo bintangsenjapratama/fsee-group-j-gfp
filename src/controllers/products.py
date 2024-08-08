@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
-from models.product import Product
+from ..models.product import Product
 from datetime import datetime
-from connectors.mysql_connectors import connection
-from decorator.role_checker import role_required
+from ..connectors.mysql_connectors import connection
+from ..decorator.role_checker import role_required
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flasgger import swag_from
 

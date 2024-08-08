@@ -9,9 +9,9 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import select
 
-from connectors.mysql_connectors import connection
-from models.blocklist import BLOCKLIST
-from models.user import User
+from ..connectors.mysql_connectors import connection
+from ..models.blocklist import BLOCKLIST
+from ..models.user import User
 
 from flasgger import swag_from
 

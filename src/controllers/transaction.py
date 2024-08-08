@@ -1,11 +1,11 @@
 from flask import Blueprint, request
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select, update
-from models.transaction import Transaction
+from ..models.transaction import Transaction
 from datetime import datetime
-from connectors.mysql_connectors import connection
-from models.product import Product
-from models.blocklist import BLOCKLIST
+from ..connectors.mysql_connectors import connection
+from ..models.product import Product
+from ..models.blocklist import BLOCKLIST
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from flasgger import swag_from
