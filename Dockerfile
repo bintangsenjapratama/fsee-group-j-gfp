@@ -2,11 +2,11 @@
 FROM python:3.12-slim
 
 # Set the working directory to /app
-RUN mkdir -p /index
+RUN mkdir -p /app
 
 # Copy file needed and setup work directory
-COPY ./src /index
-WORKDIR /index
+COPY ./src /app
+WORKDIR /app
 
 # Install Pipenv
 RUN pip install -U pipenv
@@ -18,4 +18,4 @@ RUN pipenv install --deploy
 EXPOSE 8080
 
 # Run Gunicorn
-CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:8080", "index:index"]
+CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:8080", "app:app"]
