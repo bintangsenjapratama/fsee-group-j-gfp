@@ -6,11 +6,11 @@ from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from flask_cors import CORS
 
-from connectors.mysql_connectors import connection
-from controllers.users import users_routes
-from controllers.products import products_routes
-from controllers.transaction import transaction_routes
-from models.user import User
+from .connectors.mysql_connectors import connection
+from .controllers.users import users_routes
+from .controllers.products import products_routes
+from .controllers.transaction import transaction_routes
+from .models.user import User
 
 from models.blocklist import BLOCKLIST
 from models.user import User
