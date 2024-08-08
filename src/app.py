@@ -13,8 +13,8 @@ from .controllers.products import products_routes
 from .controllers.transaction import transaction_routes
 from .models.user import User
 
-from models.blocklist import BLOCKLIST
-from models.user import User
+from .models.blocklist import BLOCKLIST
+from .models.user import User
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
