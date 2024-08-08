@@ -2,19 +2,21 @@ from flask import Flask
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
+import sys
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from flask_cors import CORS
 
-from .connectors.mysql_connectors import connection
-from .controllers.users import users_routes
-from .controllers.products import products_routes
-from .controllers.transaction import transaction_routes
-from .models.user import User
+from connectors.mysql_connectors import connection
+from controllers.users import users_routes
+from controllers.products import products_routes
+from controllers.transaction import transaction_routes
+from models.user import User
 
 from models.blocklist import BLOCKLIST
 from models.user import User
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 load_dotenv()
 
