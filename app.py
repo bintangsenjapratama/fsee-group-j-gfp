@@ -2,7 +2,6 @@ from flask import Flask
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
-import sys
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from flask_cors import CORS
@@ -15,8 +14,6 @@ from controllers.transaction import transaction_routes
 
 from models.blocklist import BLOCKLIST
 
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 load_dotenv()
 
