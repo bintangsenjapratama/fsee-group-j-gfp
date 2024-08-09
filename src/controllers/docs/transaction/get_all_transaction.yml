@@ -1,46 +1,30 @@
 tags:
   - Transactions
-openapi: 3.0.0
-info:
-  title: Get All Transactions API
-  version: 1.0.0
-paths:
-  /getallTransaction:
-    get:
-      summary: Get all transactions
-      description: Retrieves a list of all transactions.
-      parameters:
-        - name: query
-          in: query
-          required: false
-          description: Search keyword for filtering transactions by status.
-          schema:
-            type: string
-      responses:
-        200:
-          description: List of transactions
-          content:
-            application/json:
-              schema:
+responses:
+  200:
+    description: List of All Transactions
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            transactions:
+              type: array
+              items:
                 type: object
                 properties:
-                  transactions:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        user_id:
-                          type: integer
-                        product_id:
-                          type: integer
-                        product_quantity:
-                          type: integer
-                        total_price:
-                          type: number
-                          format: float
-                        status:
-                          type: string
-        500:
-          description: Unexpected Error
+                  id:
+                    type: integer
+                  from_user_id:
+                    type: integer
+                  to_user_id:
+                    type: integer
+                  product_id:
+                    type: integer
+                  product_quantity:
+                    type: integer
+                  total_price:
+                    type: number
+                    format: float
+  500:
+    description: Unexpected error
