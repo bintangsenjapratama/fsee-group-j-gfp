@@ -15,7 +15,7 @@ RUN pip install -U pipenv
 RUN pipenv install --deploy
 
 # Expose port 8080 for Gunicorn
-EXPOSE 8080
+EXPOSE 5000
 
 # Run Gunicorn
-CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:8080", "app:app"]
+CMD ["pipenv", "run", "gunicorn", "-b", "0.0.0.0:5000", "app:app"]

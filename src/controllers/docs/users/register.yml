@@ -1,31 +1,39 @@
 tags:
   - Users
-openapi: 3.0.0
-info:
-  title: Register User API
-  version: 1.0.0
-paths:
-  /register:
-    post:
-      summary: Register a new user
-      description: Registers a new user in the system.
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-                role:
-                  type: string
-                password:
-                  type: string
-      responses:
-        200:
-          description: Success to Create New User
-        500:
-          description: Fail to Register New User
+parameters:
+  - name: username
+    in: formData
+    type: string
+    required: true
+    description: The username of the new user.
+  - name: email
+    in: formData
+    type: string
+    format: email
+    required: true
+    description: The email of the new user.
+  - name: password
+    in: formData
+    type: string
+    required: true
+    description: The password of the new user.
+  - name: role
+    in: formData
+    type: string
+    required: true
+    description: The role of the new user.
+responses:
+  "200":
+    description: Successfully registered a new user.
+    schema:
+    type: object
+    properties:
+    message:
+      type: string
+  "500":
+    description: Failed to register a new user.
+    schema:
+    type: object
+    properties:
+    message:
+      type: string

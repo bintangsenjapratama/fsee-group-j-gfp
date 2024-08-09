@@ -1,12 +1,9 @@
 from flask import Blueprint, request
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select, update
-from ..models.transaction import Transaction
-from datetime import datetime
-from ..connectors.mysql_connectors import connection
-from ..models.product import Product
-from ..models.blocklist import BLOCKLIST
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from models.transaction import Transaction
+from connectors.mysql_connectors import connection
+from models.product import Product
 
 from flasgger import swag_from
 
@@ -19,7 +16,6 @@ s = Session()
 @transaction_routes.route("/register/transactions", methods=["POST"])
 @swag_from("docs/transaction/register_transaction.yml")
 def register_transaction():
-    s.begin()
     try:
         from_user_id = int(request.form["from_user_id"])
         to_user_id = int(request.form["to_user_id"])
@@ -28,7 +24,6 @@ def register_transaction():
         total_price = float(request.form["total_price"])
         status = request.form["status"]
 
-        # Query to get the current product details
         product = (
             s.execute(select(Product).where(Product.id == product_id)).scalars().first()
         )
@@ -36,18 +31,15 @@ def register_transaction():
             s.rollback()
             return {"message": "Product not found"}, 404
 
-        # Check stock availability
         if product.stock < product_quantity:
             s.rollback()
             return {"message": "Insufficient Stock"}, 400
 
-        # Calculate expected total price
         expected_total_price = product.price * product_quantity
         if total_price != expected_total_price:
             s.rollback()
             return {"message": "Total price mismatch"}, 400
 
-        # Create a new transaction
         transaction = Transaction(
             from_user_id=from_user_id,
             to_user_id=to_user_id,
@@ -58,7 +50,6 @@ def register_transaction():
         )
         s.add(transaction)
 
-        # Update product stock
         new_stock = product.stock - product_quantity
         s.execute(
             update(Product).where(Product.id == product_id).values(stock=new_stock)

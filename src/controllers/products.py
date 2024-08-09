@@ -1,10 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 from ..models.product import Product
 from datetime import datetime
-from ..connectors.mysql_connectors import connection
-from ..decorator.role_checker import role_required
+from connectors.mysql_connectors import connection
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flasgger import swag_from
 
@@ -17,33 +16,31 @@ s = Session()
 @swag_from("docs/products/get_all_product.yml")
 def get_all_product():
     try:
-        with Session() as s:
-            product_query = select(Product)
+        product_query = select(Product)
+        search_keyword = request.args.get("query")
+        if search_keyword:
+            product_query = product_query.where(
+                Product.product_name.like(f"%{search_keyword}%")
+            )
 
-            search_keyword = request.args.get("query")
-            if search_keyword:
-                product_query = product_query.where(
-                    Product.product_name.like(f"%{search_keyword}%")
+        result = s.execute(product_query)
+        products = []
+
+        for row in result.scalars():
+            products.append(
+                {
+                    "id": row.id,
+                    "user_id": row.user_id,
+                    "product_name": row.product_name,
+                    "price": row.price,
+                    "description": row.description,
+                    "stock": row.stock,
+                    "category": row.category,
+                    "type": row.type,
+                    "discount": row.discount,
+                }
                 )
-
-            result = s.execute(product_query)
-            products = []
-
-            for row in result.scalars():
-                products.append(
-                    {
-                        "id": row.id,
-                        "user_id": row.user_id,
-                        "product_name": row.product_name,
-                        "price": row.price,
-                        "description": row.description,
-                        "stock": row.stock,
-                        "category": row.category,
-                        "type": row.type,
-                        "discount": row.discount,
-                    }
-                )
-            return {"products": products}, 200
+        return {"products": products}, 200
     except Exception as e:
         print(e)
         s.rollback()
@@ -54,8 +51,6 @@ def get_all_product():
 @jwt_required()
 @swag_from("docs/products/register_product.yml")
 def register_product():
-    # s.begin()
-
     claims = get_jwt()
     if claims.get("role") == "seller":
         try:
@@ -68,23 +63,23 @@ def register_product():
             discount = (
                 float(request.form["discount"]) if "discount" in request.form else 0.0
             )
-            user_id = int(request.form["user_id"])
+            user_id = int(claims.get("id"))
 
             if discount > 0:
                 discounted_price = price * (1 - discount / 100)
             else:
                 discounted_price = price
 
-            new_product = Product(
-                product_name=product_name,
-                price=discounted_price,
-                description=description,
-                stock=stock,
-                category=category,
-                type=product_type,
-                discount=discount,
-                user_id=user_id,
-            )
+                new_product = Product(
+                    product_name=product_name,
+                    price=discounted_price,
+                    description=description,
+                    stock=stock,
+                    category=category,
+                    type=product_type,
+                    discount=discount,
+                    user_id=user_id,
+                )
             s.add(new_product)
             s.commit()
             return {"message": "Success to Create New Product"}, 200

@@ -1,44 +1,46 @@
 tags:
   - Users
-openapi: 3.0.0
-info:
-  title: Login User API
-  version: 1.0.0
-paths:
-  /login:
-    post:
-      summary: Login a user
-      description: Authenticates a user and returns a JWT token.
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-      responses:
-        200:
-          description: Success to Login user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  email:
-                    type: string
-                  id:
-                    type: integer
-                  role:
-                    type: string
-                  access_tokern:
-                    type: string
-                  message:
-                    type: string
-        403:
-          description: User not found or Invalid password
-        500:
-          description: Failed to Login User
+parameters:
+  - name: email
+    in: formData
+    type: string
+    format: email
+    required: true
+    description: The email of the user.
+    example: "kuro@gmail.com"
+  - name: password
+    in: formData
+    type: string
+    required: true
+    description: The password of the user.
+    example: "12345678"
+responses:
+  "200":
+    description: Successfully logged in a user.
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        role:
+          type: string
+        access_token:
+          type: string
+        message:
+          type: string
+  "403":
+    description: Invalid email or password.
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+  "500":
+    description: Failed to login a user.
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
