@@ -10,10 +10,10 @@ from connectors.mysql_connectors import connection
 from controllers.users import users_routes
 from controllers.products import products_routes
 from controllers.transaction import transaction_routes
-from models.user import User
+
 
 from models.blocklist import BLOCKLIST
-from models.user import User
+
 
 
 load_dotenv()
