@@ -56,7 +56,6 @@ def get_allUser():
 @users_routes.route("/register", methods=["POST"])
 @swag_from("docs/users/register.yml")
 def register_usersData():
-    s.begin()
     try:
         NewUser = User(
             username=request.form["username"],
