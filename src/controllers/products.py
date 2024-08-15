@@ -38,8 +38,9 @@ def get_all_product():
                     "category": row.category,
                     "type": row.type,
                     "discount": row.discount,
+                    "image_url": row.image_url,
                 }
-                )
+            )
         return {"products": products}, 200
     except Exception as e:
         print(e)
@@ -64,6 +65,7 @@ def register_product():
                 float(request.form["discount"]) if "discount" in request.form else 0.0
             )
             user_id = int(claims.get("id"))
+            image_url = request.form["image_url"]
 
             if discount > 0:
                 discounted_price = price * (1 - discount / 100)
@@ -79,6 +81,7 @@ def register_product():
                     type=product_type,
                     discount=discount,
                     user_id=user_id,
+                    image_url=image_url,
                 )
             s.add(new_product)
             s.commit()

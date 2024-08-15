@@ -1,5 +1,5 @@
 from models.base import Base
-from sqlalchemy import Integer, DateTime, String, DECIMAL, ForeignKey
+from sqlalchemy import Integer, DateTime, String, DECIMAL, ForeignKey, VARCHAR
 from sqlalchemy.sql import func
 from sqlalchemy.orm import mapped_column, relationship
 
@@ -17,5 +17,6 @@ class Product(Base):
     discount = mapped_column(DECIMAL(10, 2))
     created_at = mapped_column(DateTime, nullable=False, server_default=func.now())
     update_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
+    image_url = mapped_column(VARCHAR(255), nullable=True)
 
     user = relationship("User", back_populates="products")
