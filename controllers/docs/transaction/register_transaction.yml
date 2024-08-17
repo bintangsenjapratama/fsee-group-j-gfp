@@ -1,0 +1,37 @@
+tags:
+  - Transactions
+parameters:
+  - name: from_user_id
+    in: formData
+    type: integer
+    required: true
+    description: ID of the user who is sending the transaction.
+  - name: to_user_id
+    in: formData
+    type: integer
+    required: true
+    description: ID of the user who is receiving the transaction.
+  - name: product_id
+    in: formData
+    type: integer
+    required: true
+    description: ID of the product being transferred.
+  - name: product_quantity
+    in: formData
+    type: integer
+    required: true
+    description: Quantity of the product being transferred.
+  - name: total_price
+    in: formData
+    type: number
+    format: float
+    required: true
+responses:
+  404:
+    description: Product not found
+  400:
+    description: Insufficient Stock
+  400:
+    description: Total price mismatch
+  200:
+    description: Transaction created

@@ -1,0 +1,40 @@
+tags:
+  - Users
+openapi: 3.0.0
+info:
+  title: Logout User API
+  version: 1.0.0
+paths:
+  /logout:
+    post:
+      summary: Logout a user
+      description: Logs out a user by invalidating their JWT.
+      responses:
+        200:
+          description: User successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User successfully logged out"
+        500:
+          description: Failed to logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Failed to logout"
+      security:
+        - jwtAuth: []
+components:
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

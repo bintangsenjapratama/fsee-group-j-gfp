@@ -1,0 +1,25 @@
+tags:
+  - Users
+openapi: 3.0.0
+info:
+  title: Get Current User API
+  version: 1.0.0
+paths:
+  /whoami:
+    get:
+      summary: Get current user
+      description: Retrieves the current user's information from the JWT token.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  claims:
+                    type: object
+        500:
+          description: Failed to get current user

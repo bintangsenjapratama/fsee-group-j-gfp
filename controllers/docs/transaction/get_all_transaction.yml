@@ -1,0 +1,30 @@
+tags:
+  - Transactions
+responses:
+  200:
+    description: List of All Transactions
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  from_user_id:
+                    type: integer
+                  to_user_id:
+                    type: integer
+                  product_id:
+                    type: integer
+                  product_quantity:
+                    type: integer
+                  total_price:
+                    type: number
+                    format: float
+  500:
+    description: Unexpected error

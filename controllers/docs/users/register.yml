@@ -1,0 +1,39 @@
+tags:
+  - Users
+parameters:
+  - name: username
+    in: formData
+    type: string
+    required: true
+    description: The username of the new user.
+  - name: email
+    in: formData
+    type: string
+    format: email
+    required: true
+    description: The email of the new user.
+  - name: password
+    in: formData
+    type: string
+    required: true
+    description: The password of the new user.
+  - name: role
+    in: formData
+    type: string
+    required: true
+    description: The role of the new user.
+responses:
+  "200":
+    description: Successfully registered a new user.
+    schema:
+    type: object
+    properties:
+    message:
+      type: string
+  "500":
+    description: Failed to register a new user.
+    schema:
+    type: object
+    properties:
+    message:
+      type: string

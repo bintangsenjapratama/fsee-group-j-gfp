@@ -1,0 +1,45 @@
+tags:
+  - Products
+openapi: 3.0.0
+info:
+  title: Register Product API
+  version: 1.0.0
+paths:
+  /registerProduct:
+    post:
+      summary: Register a new product
+      description: Registers a new product in the system.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product_name:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                description:
+                  type: string
+                stock:
+                  type: integer
+                category:
+                  type: string
+                type:
+                  type: string
+                discount:
+                  type: number
+                  format: float
+                user_id:
+                  type: integer
+      responses:
+        200:
+          description: Success to Create New Product
+        403:
+          description: Only Seller can register add product
+        500:
+          description: Fail to Register New Product

@@ -1,0 +1,29 @@
+tags:
+  - Users
+openapi: 3.0.0
+info:
+  title: Update Current User API
+  version: 1.0.0
+paths:
+  /users/me:
+    put:
+      summary: Update current user
+      description: Updates the current user's information.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        200:
+          description: User updated successfully
+        404:
+          description: User not found
+        500:
+          description: Failed to update user

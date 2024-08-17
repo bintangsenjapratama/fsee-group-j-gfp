@@ -1,0 +1,53 @@
+tags:
+  - Products
+openapi: 3.0.0
+info:
+  title: Get All Products API
+  version: 1.0.0
+paths:
+  /getallproduct:
+    get:
+      summary: Get all products
+      description: Retrieves a list of all products.
+      parameters:
+        - name: query
+          in: query
+          required: false
+          description: Search keyword for filtering products by name.
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        user_id:
+                          type: integer
+                        product_name:
+                          type: string
+                        price:
+                          type: number
+                          format: float
+                        description:
+                          type: string
+                        stock:
+                          type: integer
+                        category:
+                          type: string
+                        type:
+                          type: string
+                        discount:
+                          type: number
+                          format: float
+        500:
+          description: Unexpected Error

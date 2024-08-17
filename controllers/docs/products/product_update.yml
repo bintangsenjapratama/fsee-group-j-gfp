@@ -1,0 +1,50 @@
+tags:
+  - Products
+openapi: 3.0.0
+info:
+  title: Update Product API
+  version: 1.0.0
+paths:
+  /product/{id}:
+    put:
+      summary: Update product
+      description: Updates the details of an existing product.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the product to be updated.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product_name:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                description:
+                  type: string
+                stock:
+                  type: integer
+                category:
+                  type: string
+                type:
+                  type: string
+                discount:
+                  type: number
+                  format: float
+                user_id:
+                  type: integer
+      responses:
+        200:
+          description: Successfully updated product data
+        404:
+          description: Product not found
+        500:
+          description: Failed to update
