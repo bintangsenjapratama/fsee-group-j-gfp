@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
@@ -13,6 +13,11 @@ from controllers.transaction import transaction_routes
 
 
 from models.blocklist import BLOCKLIST
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 
 load_dotenv()
@@ -34,6 +39,11 @@ cors = CORS(
     resources={r"/*": {"origins": ["http://localhost:3000", "https://front-end-git-main-lightkazutos-projects.vercel.app"]}},
 )
 
+cloudinary.config(
+  cloud_name = 'defjz8q5v',
+  api_key = '791993253684266',
+  api_secret = 'faM4kmRGhnK5pvEYImpnWZqhbbU'
+)
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(jwt_header, jwt_payload):
@@ -52,6 +62,20 @@ def make_additional_claims(role):
     return {"is_seller": False}
 
 
+# Routes
 @app.route("/")
 def index():
     return "Welcome to Flask!"
+
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    file_to_upload = request.files.get('file')
+
+    if not file_to_upload:
+        return jsonify({"error": "No file provided"}), 400
+
+    try:
+        upload_result = cloudinary.uploader.upload(file_to_upload)
+        return jsonify(upload_result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
