@@ -94,7 +94,7 @@ def login_userData():
             "email": user.email,
             "id": user.id,
             "role": user.role,
-            "access_tokern": acces_token,
+            "access_token": acces_token,
             "message": "Success to Login user",
         }, 200
     except Exception as e:
