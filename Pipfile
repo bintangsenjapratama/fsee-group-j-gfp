@@ -15,6 +15,7 @@ mysql-connector-python = "*"
 python-dotenv = "*"
 gunicorn = "*"
 flask-cors = "*"
+cloudinary = "*"
 
 [dev-packages]
 
