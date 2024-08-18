@@ -36,7 +36,7 @@ app.register_blueprint(transaction_routes)
 
 cors = CORS(
     app,
-    resources={r"/*": {"origins": ["http://localhost:3000", "https://front-end-git-main-lightkazutos-projects.vercel.app/"]}},
+    resources={r"/*": {"origins": ["http://localhost:3000", "https://front-end-git-main-lightkazutos-projects.vercel.app"]}},
 )
 
 cloudinary.config(
