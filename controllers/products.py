@@ -72,17 +72,17 @@ def register_product():
             else:
                 discounted_price = price
 
-                new_product = Product(
-                    product_name=product_name,
-                    price=discounted_price,
-                    description=description,
-                    stock=stock,
-                    category=category,
-                    type=product_type,
-                    discount=discount,
-                    user_id=user_id,
-                    image_url=image_url,
-                )
+            new_product = Product(
+                product_name=product_name,
+                price=discounted_price,
+                description=description,
+                stock=stock,
+                category=category,
+                type=product_type,
+                discount=discount,
+                user_id=user_id,
+                image_url=image_url,
+            )
             s.add(new_product)
             s.commit()
             return {"message": "Success to Create New Product"}, 200
