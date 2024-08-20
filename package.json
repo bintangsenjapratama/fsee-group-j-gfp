@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "next-cloudinary": "^6.10.0"
+  }
+}
