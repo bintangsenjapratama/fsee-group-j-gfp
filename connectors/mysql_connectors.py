@@ -7,12 +7,23 @@ host = os.getenv("MYSQLHOST")
 database = os.getenv("MYSQLDATABASE")
 port = os.getenv("MYSQLPORT")
 
-# Connect to Database
 print("Connecting to MySQL Database")
 engine = create_engine(
-    f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}"
+    f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}", echo=True
 )
 print(engine)
+
+
+# username = os.getenv("DB_USERNAME")
+# password = os.getenv("DB_PASSWORD")
+# host = os.getenv("DB_HOST")
+# database = os.getenv("DB_DATABASE")
+
+# print("Connecting to MySQL Database")
+# engine = create_engine(
+#     f"mysql+mysqlconnector://{username}:{password}@{host}/{database}"
+# )
+# print(engine)
 
 connection = engine.connect()
 print("Success Connecting to MySQL User Database")

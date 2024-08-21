@@ -1,9 +1,9 @@
-from models.base import Base
+from .base import Base
 from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import mapped_column, relationship
 import bcrypt
-from models.transaction import Transaction
+from .transaction import Transaction
 
 
 class User(Base):

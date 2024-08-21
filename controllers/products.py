@@ -6,10 +6,10 @@ from datetime import datetime
 from connectors.mysql_connectors import connection
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flasgger import swag_from
+from controllers.users import s
 
 products_routes = Blueprint("products_routes", __name__)
-Session = sessionmaker(connection)
-s = Session()
+
 
 
 @products_routes.route("/getallproduct", methods=["GET"])
@@ -39,6 +39,7 @@ def get_all_product():
                     "type": row.type,
                     "discount": row.discount,
                     "image_url": row.image_url,
+                    
                 }
             )
         return {"products": products}, 200
@@ -130,7 +131,6 @@ def get_accounts_by_user_id():
 @products_routes.route("/product/<id>", methods=["PUT"])
 @swag_from("docs/products/product_update.yml")
 def product_update(id):
-    s.begin()
     try:
         product = s.query(Product).filter(Product.id == id).first()
 

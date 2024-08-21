@@ -5,13 +5,11 @@ from models.transaction import Transaction
 from connectors.mysql_connectors import connection
 from models.product import Product
 from flask_jwt_extended import jwt_required, get_jwt
-
+from controllers.users import s
 from flasgger import swag_from
 
 
 transaction_routes = Blueprint("transaction_routes", __name__)
-Session = sessionmaker(connection)
-s = Session()
 
 
 @transaction_routes.route("/register/transactions", methods=["POST"])
@@ -51,10 +49,11 @@ def register_transaction():
         )
         s.add(transaction)
 
-        new_stock = product.stock - product_quantity
-        s.execute(
-            update(Product).where(Product.id == product_id).values(stock=new_stock)
-        )
+        # new_stock = product.stock - product_quantity
+        product.stock = product.stock - product_quantity
+        # s.execute(
+        #     update(Product).where(Product.id == product_id).values(stock=product.stock)
+        # )
 
         s.commit()
 
@@ -70,20 +69,18 @@ def register_transaction():
 @swag_from("docs/transaction/get_all_transaction.yml")
 def get_all_transaction():
     try:
-        with Session() as s:
-            transaction_querry = select(Transaction)
+        transaction_querry = select(Transaction)
+        search_keyword = request.args.get("query")
+        if search_keyword:
+            transaction_querry = transaction_querry.where(
+                Transaction.status.like(f"%{search_keyword}%")
+            )
 
-            search_keyword = request.args.get("query")
-            if search_keyword:
-                transaction_querry = transaction_querry.where(
-                    Transaction.status.like(f"%{search_keyword}%")
-                )
+        result = s.execute(transaction_querry)
+        transactions = []
 
-            result = s.execute(transaction_querry)
-            transactions = []
-
-            for row in result.scalars():
-                transactions.append(
+        for row in result.scalars():
+            transactions.append(
                     {
                         "id": row.id,
                         "user_id": row.from_user_id,
@@ -93,7 +90,7 @@ def get_all_transaction():
                         "status": row.status,
                     }
                 )
-            return {"transactions": transactions}, 200
+        return {"transactions": transactions}, 200
     except Exception as e:
         print(e)
         s.rollback()
