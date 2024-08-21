@@ -19,7 +19,6 @@ import cloudinary.uploader
 import cloudinary.api
 
 
-
 load_dotenv()
 
 app = Flask(__name__)
@@ -36,7 +35,14 @@ app.register_blueprint(transaction_routes)
 
 cors = CORS(
     app,
-    resources={r"/*": {"origins": ["http://localhost:3000", "https://front-end-git-main-lightkazutos-projects.vercel.app"]}},
+    resources={
+        r"/*": {
+            "origins": [
+                "http://localhost:3000",
+                "https://front-9sp1dhtdf-lightkazutos-projects.vercel.app",
+            ]
+        }
+    },
 )
 
 cloudinary.config(
