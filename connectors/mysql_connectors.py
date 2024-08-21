@@ -9,7 +9,7 @@ port = os.getenv("MYSQLPORT")
 
 print("Connecting to MySQL Database")
 engine = create_engine(
-    f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}"
+    f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}", echo=True
 )
 print(engine)
 
