@@ -113,7 +113,7 @@ def get_cart():
 
         # Calculate order summary
         subtotal = sum(item.product_quantity * float(product_map[item.product_id].price) for item in cart_items if item.product_id in product_map)
-        total_discount = sum(float(product_map[item.product_id].discount) * float(product_map[item.product_id].price) for item in cart_items if item.product_id in product_map)
+        total_discount =  sum(float(product_map[item.product_id].discount) * float(product_map[item.product_id].price * item.product_quantity / 100) for item in cart_items if item.product_id in product_map)
         delivery_cost = subtotal * 0.1
         total = subtotal - total_discount + delivery_cost
         
@@ -158,25 +158,29 @@ def update_cart_item_quantity():
 
         # Find the cart item by id
         cart_item = s.query(Transaction).filter_by(id=cart_item_id, to_user_id=user.get("id"), status="cart").first()
-
         if not cart_item:
             return jsonify({"message": "Cart item not found"}), 404
-
-        # Update the quantity
-        cart_item.product_quantity = new_quantity
-
-        # Recalculate total price
+        
+        # Find product
         product = s.query(Product).filter_by(id=cart_item.product_id).first()
         if not product:
             return jsonify({"message": "Product not found"}), 404
         
-        # Calculate new total price
-        discount_amount = (product.discount or 0) * product.price * new_quantity / 100
-        cart_item.total_price = (product.price * new_quantity) - discount_amount
+        # Update stock
+        product.stock = product.stock - (new_quantity - cart_item.product_quantity)
 
-        s.commit()
+        if product.stock >= 0:
+            # Update the quantity
+            cart_item.product_quantity = new_quantity
+            
+            # Calculate new total price
+            cart_item.total_price = product.price * cart_item.product_quantity
 
-        return jsonify({"message": "Quantity updated successfully"}), 200
+            s.commit()
+
+            return jsonify({"message": "Quantity updated successfully"}), 200
+        else:
+            return jsonify({"message": "Insufficient Stock"}), 400
     except Exception as e:
         print(e)
         s.rollback()
@@ -193,9 +197,16 @@ def delete_cart_item():
 
         # Find the cart item by its id
         cart_item = s.query(Transaction).filter_by(id=cart_item_id, to_user_id=user.get("id"), status="cart").first()
-
         if not cart_item:
             return jsonify({"message": "Cart item not found"}), 404
+        
+        # Find product
+        product = s.query(Product).filter_by(id=cart_item.product_id).first()
+        if not product:
+            return jsonify({"message": "Product not found"}), 404
+        
+        # Return product stock
+        product.stock = product.stock + cart_item.product_quantity
 
         # Remove cart item from transaction table
         s.delete(cart_item)
@@ -206,3 +217,24 @@ def delete_cart_item():
         print(e)
         s.rollback()
         return jsonify({"message": "Unexpected Error"}), 500
+
+@transaction_routes.route("/checkout", methods=["POST"])
+@jwt_required()
+def checkout():
+    user = get_jwt()
+    try:
+        # get cart data
+        user_cart = s.query(Transaction).filter_by(to_user_id=user.get("id"), status="cart")
+        if not user_cart:
+            return jsonify({'error': 'Cart is empty'}), 400
+        
+        # update status to done
+        for item in user_cart:
+            item.status = "done"
+
+        s.commit()
+        return jsonify({'message': 'Checkout successful'}), 200
+    
+    except Exception as e:
+        s.rollback()
+        return jsonify({'error': str(e)}), 500
