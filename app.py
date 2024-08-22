@@ -39,7 +39,7 @@ cors = CORS(
         r"/*": {
             "origins": [
                 "http://localhost:3000",
-                "https://front-9sp1dhtdf-lightkazutos-projects.vercel.app",
+                "https://front-end-git-main-lightkazutos-projects.vercel.app/",
             ]
         }
     },
