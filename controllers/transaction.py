@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select, update
 from models.transaction import Transaction
+from models.user import User
 from connectors.mysql_connectors import connection
 from models.product import Product
 from flask_jwt_extended import jwt_required, get_jwt
@@ -102,7 +103,9 @@ def get_cart():
     user = get_jwt()
     try:
         # get user's cart items
+        print(f'user: {user.get('id')}')
         cart_items = s.query(Transaction).filter_by(to_user_id=user.get("id"), status="cart").all()
+        print(f'carts: {cart_items}')
         
         # collect product ids
         product_ids = [item.product_id for item in cart_items]
@@ -238,3 +241,46 @@ def checkout():
     except Exception as e:
         s.rollback()
         return jsonify({'error': str(e)}), 500
+
+@transaction_routes.route("/transactionHistory", methods=["GET"])
+@jwt_required()
+def transaction_history():
+    user = get_jwt()
+    try:
+        # get cart data
+        transactions = s.query(Transaction).filter_by(to_user_id=user.get("id"), status="done").all()
+        if not transactions:
+            return jsonify({'error': 'User has no transaction history'}), 400
+        
+        # get product ids
+        product_ids = [item.product_id for item in transactions]
+
+        # Query all products in one go using the list of product IDs
+        products = s.query(Product).filter(Product.id.in_(product_ids)).all()
+        product_map = {product.id: product for product in products}
+
+        # get user ids
+        user_ids = [item.from_user_id for item in transactions]
+        # Query seller data using product's from_user_id
+        users = s.query(User).filter(User.id.in_(user_ids)).all()
+        user_map = {user.id: user for user in users}
+
+        items_data = [{
+            'id': item.id,
+            'image_url': product_map[item.product_id].image_url if item.product_id in product_map else None,
+            'product_name': product_map[item.product_id].product_name if item.product_id in product_map else None,
+            'description': product_map[item.product_id].description if item.product_id in product_map else None,
+            'quantity': item.product_quantity,
+            'total_price': item.total_price,
+            'date': item.created_at,
+            'seller': user_map[item.from_user_id].email if item.from_user_id in user_map else None
+        } for item in transactions]
+
+        return jsonify({
+            'items': items_data
+        }), 200
+    
+    except Exception as e:
+        print(e)
+        s.rollback()
+        return {"message": "Unexpected Error, {e}"}, 500
